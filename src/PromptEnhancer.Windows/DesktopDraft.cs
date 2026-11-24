@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Automation;
@@ -87,10 +87,12 @@ public sealed class DesktopDraft
     {
         GetWindowThreadProcessId(handle,out var pid);
         if (pid == 0) return false;
-        using var process = Process.GetProcessById((int)pid);
+        const uint queryLimitedInformation = 0x1000;
+        using var process = OpenProcess(queryLimitedInformation,false,pid);
+        if (process.IsInvalid) return false;
         var length = 256u;
         var family = new StringBuilder((int)length);
-        return GetPackageFamilyName(process.Handle, ref length, family) == 0 &&
+        return GetPackageFamilyName(process, ref length, family) == 0 &&
             family.ToString().Equals("OpenAI.ChatGPT-Desktop_2p2nqsd0c76g0", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -98,6 +100,7 @@ public sealed class DesktopDraft
     [DllImport("user32.dll")] private static extern bool IsWindow(IntPtr window);
     [DllImport("user32.dll",CharSet=CharSet.Unicode)] private static extern int GetWindowText(IntPtr window,StringBuilder text,int size);
     [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr window,out uint process);
-    [DllImport("kernel32.dll",CharSet=CharSet.Unicode)] private static extern int GetPackageFamilyName(IntPtr process,ref uint length,StringBuilder name);
+    [DllImport("kernel32.dll",ExactSpelling=true)] private static extern SafeProcessHandle OpenProcess(uint access,bool inherit,uint pid);
+    [DllImport("kernel32.dll",CharSet=CharSet.Unicode,ExactSpelling=true)] private static extern int GetPackageFamilyName(SafeProcessHandle process,ref uint length,StringBuilder name);
 }
 
