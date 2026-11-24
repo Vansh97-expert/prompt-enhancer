@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>PromptEnhancer</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="PromptEnhancer.Checks" />
+    <ProjectReference Include="../PromptEnhancer.Core/PromptEnhancer.Core.csproj" />
+  </ItemGroup>
+</Project>

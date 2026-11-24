@@ -1,0 +1,51 @@
+name: Windows checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      local_model:
+        description: Exercise the isolated Ollama runner with a real local model
+        type: boolean
+        default: true
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: windows-2025
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore and build
+        shell: pwsh
+        run: |
+          dotnet restore PromptEnhancer.slnx --configfile NuGet.Config
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build PromptEnhancer.slnx -c Release --no-restore
+      - name: Run regression suite
+        run: dotnet run --project tests/PromptEnhancer.Checks -c Release --no-build
+      - name: Verify local AI using synthetic text
+        if: github.event_name == 'workflow_dispatch' && inputs.local_model
+        shell: pwsh
+        run: |
+          $dir = Join-Path $env:RUNNER_TEMP 'ollama-test'
+          $zip = "$dir.zip"
+          curl.exe -fL --retry 2 -sS -o $zip 'https://github.com/ollama/ollama/releases/download/v0.40.18/ollama-windows-amd64.zip'
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          if ((Get-FileHash $zip).Hash -ne 'ca97292ac1e9acc77fcf473bb2741fa6acd12e3798f261b419680068b7cc4c16') { throw 'Unexpected runner checksum.' }
+          Expand-Archive -LiteralPath $zip -DestinationPath $dir
+          ./scripts/check-local-model.ps1 -Runner (Join-Path $dir 'ollama.exe')
+      - name: Package self-contained app
+        shell: pwsh
+        run: ./scripts/package.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PromptEnhancer-win-x64
+          path: |
+            artifacts/PromptEnhancer-win-x64.zip
+            artifacts/PromptEnhancer-win-x64.zip.sha256
+          if-no-files-found: error
+

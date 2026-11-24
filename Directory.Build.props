@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RestoreIgnoreFailedSources>false</RestoreIgnoreFailedSources>
+    <Version>0.1.0</Version>
+    <Authors>Prompt Enhancer contributors</Authors>
+    <Company>Prompt Enhancer</Company>
+    <Product>Prompt Enhancer</Product>
+  </PropertyGroup>
+</Project>

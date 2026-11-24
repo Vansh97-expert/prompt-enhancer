@@ -1,0 +1,10 @@
+.tools/
+.artifacts/
+artifacts/
+bin/
+obj/
+.vs/
+*.user
+*.local.json
+*.env
+.env
