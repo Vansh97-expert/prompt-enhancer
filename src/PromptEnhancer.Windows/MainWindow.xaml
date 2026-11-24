@@ -1,0 +1,47 @@
+<Window x:Class="PromptEnhancer.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Prompt Enhancer" Width="690" Height="760" MinWidth="430" MinHeight="420" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="14" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
+  <DockPanel LastChildFill="True" Margin="24,16">
+    <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBlock FontSize="26" FontWeight="SemiBold" Text="Prompt Enhancer" VerticalAlignment="Center"/>
+      <Button Grid.Column="1" Content="_Settings" Click="OpenSettings"/>
+    </Grid>
+    <StackPanel DockPanel.Dock="Bottom">
+      <Separator Margin="0,12,0,6"/>
+      <TextBlock x:Name="Status" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+      <WrapPanel>
+        <Button x:Name="Back" Content="_Back" Click="GoBack" Visibility="Collapsed"/>
+        <Button x:Name="Next" Content="_Detect task" Click="Advance" FontWeight="SemiBold"/>
+        <Button x:Name="CopyButton" Content="_Copy" Click="Copy" Visibility="Collapsed"/>
+        <Button x:Name="InsertButton" Content="_Insert" Click="Insert" Visibility="Collapsed"/>
+        <Button x:Name="RulesButton" Content="Use _rules instead" Click="UseRules" Visibility="Collapsed"/>
+        <Button x:Name="StopButton" Content="Cancel _generation" Click="Stop" Visibility="Collapsed"/>
+        <Button Content="_Hide" Click="HidePopup" ToolTip="Clear this draft and keep the shortcut available"/>
+      </WrapPanel>
+    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" x:Name="Scroll">
+      <StackPanel>
+        <StackPanel x:Name="Entry">
+          <Label Content="Your _draft" Target="{Binding ElementName=Raw}"/>
+          <TextBox x:Name="Raw" AutomationProperties.Name="Your draft" MinHeight="170" MaxHeight="360" MaxLength="32000" AcceptsReturn="True" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel x:Name="Options" Visibility="Collapsed">
+          <Label Content="Detected _task" Target="{Binding ElementName=TaskBox}"/>
+          <ComboBox x:Name="TaskBox" AutomationProperties.Name="Detected task" SelectionChanged="TaskChanged"/>
+          <Label Content="Target _model in ChatGPT" Target="{Binding ElementName=Target}"/>
+          <TextBox x:Name="Target" AutomationProperties.Name="Target model in ChatGPT" MaxLength="100" TextChanged="TargetChanged" />
+          <TextBlock x:Name="Compatibility" Margin="0,4" TextWrapping="Wrap"/>
+          <Label Content="Prompting te_chnique" Target="{Binding ElementName=TechniqueBox}"/>
+          <ComboBox x:Name="TechniqueBox" AutomationProperties.Name="Prompting technique" SelectionChanged="TechniqueChanged"/>
+          <TextBlock x:Name="Rationale" Margin="0,4" TextWrapping="Wrap"/>
+          <StackPanel x:Name="Questions"/>
+        </StackPanel>
+        <StackPanel x:Name="Review" Visibility="Collapsed">
+          <Label Content="_Edited prompt" Target="{Binding ElementName=Preview}"/>
+          <TextBox x:Name="Preview" AutomationProperties.Name="Edited prompt" MaxLength="64000" AcceptsReturn="True" MinHeight="180" MaxHeight="360" TextWrapping="Wrap"/>
+          <TextBlock Text="Assumptions made" FontSize="18" FontWeight="SemiBold" Margin="0,16,0,5"/>
+          <TextBlock x:Name="Notes" TextWrapping="Wrap"/>
+        </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</Window>

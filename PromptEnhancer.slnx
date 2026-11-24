@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/PromptEnhancer.Core/PromptEnhancer.Core.csproj" />
+  <Project Path="src/PromptEnhancer.Windows/PromptEnhancer.Windows.csproj" />
+  <Project Path="tests/PromptEnhancer.Checks/PromptEnhancer.Checks.csproj" />
+</Solution>
